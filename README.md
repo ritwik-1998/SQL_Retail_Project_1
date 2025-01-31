@@ -120,8 +120,10 @@ group by category, gender;
 Select month, year, avg_sales
 from (select month(sale_date) as month,
              year(sale_date) as year,
-			 avg(total_sale) as avg_sales,
-			 RANK()over(partition by year(sale_date) order by avg(total_sale) desc) as rank
+             avg(total_sale) as avg_sales,
+             RANK()over(partition by year(sale_date)
+     order by avg(total_sale) desc)
+     as rank
 from retail
 group by year(sale_date),month(sale_date)) as t1
 where rank=1
@@ -148,12 +150,12 @@ group by category;
 ```sql
 with hourly_sale as
 (
-    select *,
-          case
-	        when DATEPART(HOUR, sale_time) < 12 then 'Morning'
-		    when DATEPART(HOUR, sale_time) between 12 and 17 then 'Afternoon'
-		    else 'evening'
-	      End as shifts 
+select *,
+     case
+        when DATEPART(HOUR, sale_time) < 12 then 'Morning'
+        when DATEPART(HOUR, sale_time) between 12 and 17 then 'Afternoon'
+        Else 'evening'
+     End as shifts 
 from retail
 )
 select shifts, count(transactions_id) as total_orders
